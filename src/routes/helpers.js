@@ -12,77 +12,97 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tryRoute = exports.setupApiRoute = exports.setupAdminPageRoute = exports.setupPageRoute = void 0;
+exports.setupApiRoute = exports.setupAdminPageRoute = exports.setupPageRoute = exports.tryRoute = void 0;
 const winston_1 = __importDefault(require("winston"));
 const middleware_1 = __importDefault(require("../middleware"));
 const helpers_1 = __importDefault(require("../controllers/helpers"));
-// router, name, middleware(deprecated), middlewares(optional), controller
-function setupPageRoute(router, name, middleware, middlewares, controller) {
-    //if (args.length === 5) {
-    //    winston.warn(`[helpers.setupPageRoute(${name})] passing \`middleware\` as the third param is deprecated, it can now be safely removed`);
-    //}
-    middlewares = [
-        middleware.authenticateRequest,
-        middleware.maintenanceMode,
-        middleware.registrationComplete,
-        middleware.pluginHooks,
-        ...middlewares,
-        middleware.pageView,
-    ];
-    router.get(name, middleware.busyCheck, middlewares, middleware.buildHeader, tryRoute(controller));
-    router.get(`/api${name}`, middlewares, tryRoute(controller));
-}
-exports.setupPageRoute = setupPageRoute;
-;
-// router, name, middleware(deprecated), middlewares(optional), controller
-function setupAdminPageRoute(...args) {
-    const [router, name] = args;
-    const middlewares = args.length > 3 ? args[args.length - 2] : [];
-    const controller = args[args.length - 1];
-    if (args.length === 5) {
-        winston_1.default.warn(`[helpers.setupAdminPageRoute(${name})] passing \`middleware\` as the third param is deprecated, it can now be safely removed`);
-    }
-    router.get(name, middleware_1.default.admin.buildHeader, middlewares, tryRoute(controller));
-    router.get(`/api${name}`, middlewares, tryRoute(controller));
-}
-exports.setupAdminPageRoute = setupAdminPageRoute;
-;
-// router, verb, name, middlewares(optional), controller
-function setupApiRoute(...args) {
-    const [router, verb, name] = args;
-    let middlewares = args.length > 4 ? args[args.length - 2] : [];
-    const controller = args[args.length - 1];
-    middlewares = [
-        middleware_1.default.authenticateRequest,
-        middleware_1.default.maintenanceMode,
-        middleware_1.default.registrationComplete,
-        middleware_1.default.pluginHooks,
-        ...middlewares,
-    ];
-    router[verb](name, middlewares, tryRoute(controller, (err, res) => {
-        helpers_1.default.formatApiResponse(400, res, err);
-    }));
-}
-exports.setupApiRoute = setupApiRoute;
-;
+// The next line calls controller and handler that has not been updated to TS yet
+// eslint-disable-next-line
 function tryRoute(controller, handler) {
     // `handler` is optional
+    // The next line calls controller has not been updated to TS yet
+    // eslint-disable-next-line
     if (controller && controller.constructor && controller.constructor.name === 'AsyncFunction') {
+        // The next line calls next that has not been updated to TS yet
+        // eslint-disable-next-line
         return function (req, res, next) {
             return __awaiter(this, void 0, void 0, function* () {
                 try {
+                    // The next line calls controller and handler that has not been updated to TS yet
+                    // eslint-disable-next-line
                     yield controller(req, res, next);
                 }
                 catch (err) {
+                    // The next line calls handler that has not been updated to TS yet
+                    // eslint-disable-next-line
                     if (handler) {
+                        // The next line calls handler that has not been updated to TS yet
+                        // eslint-disable-next-line
                         return handler(err, res);
                     }
+                    // The next line calls next that has not been updated to TS yet
+                    // eslint-disable-next-line
                     next(err);
                 }
             });
         };
     }
+    // The next line calls controller that has not been updated to TS yet
+    // eslint-disable-next-line
     return controller;
 }
 exports.tryRoute = tryRoute;
-;
+// router, name, middleware(deprecated), middlewares(optional), controller
+// The next line calls middleware, middlewares and controller that has not been updated to TS yet
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+function setupPageRoute(router, name, middleware, middlewares, controller) {
+    // The next line calls  middlewares that has not been updated to TS yet
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    if (middlewares) {
+        winston_1.default.warn(`[helpers.setupPageRoute(${name})] passing \`middleware\` as the third param is deprecated, it can now be safely removed`);
+    }
+    // The next lines calls  middlewares that has not been updated to TS yet
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    middlewares = [middleware.authenticateRequest, middleware.maintenanceMode,
+        // eslint-disable-next-line
+        middleware.registrationComplete, middleware.pluginHooks, middlewares, middleware.pageView];
+    // The next line calls  middlewares and middleware that has not been updated to TS yet
+    // eslint-disable-next-line
+    router.get(name, middleware.busyCheck, middlewares, middleware.buildHeader, tryRoute(controller));
+    // The next line calls  middlewares and controller that has not been updated to TS yet
+    // eslint-disable-next-line
+    router.get(`/api${name}`, middlewares, tryRoute(controller));
+}
+exports.setupPageRoute = setupPageRoute;
+// router, name, middleware(deprecated), middlewares(optional), controller
+function setupAdminPageRoute(router, name, middleware, middlewares, controller) {
+    // The next line calls  middlewares and controller that has not been updated to TS yet
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    if (middlewares) {
+        winston_1.default.warn(`[helpers.setupPageRoute(${name})] passing \`middleware\` as the third param is deprecated, it can now be safely removed`);
+    }
+    // The next line calls middlewares and middleware that has not been updated to TS yet
+    // eslint-disable-next-line
+    router.get(name, middleware.admin.buildHeader, middlewares, tryRoute(controller));
+    // The next line calls  middlewares that has not been updated to TS yet
+    // eslint-disable-next-line
+    router.get(`/api${name}`, middlewares, tryRoute(controller));
+}
+exports.setupAdminPageRoute = setupAdminPageRoute;
+// router, verb, name, middlewares(optional), controller
+// The next line calls  middlewares and controller that has not been updated to TS yet
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+function setupApiRoute(router, verb, name, middlewares, controller) {
+    // The next line calls  middleware that has not been updated to TS yet
+    // eslint-disable-next-line
+    middlewares = [middleware_1.default.authenticateRequest, middleware_1.default.maintenanceMode,
+        // The next line calls  middlewares that has not been updated to TS yet
+        // eslint-disable-next-line
+        middleware_1.default.registrationComplete, middleware_1.default.pluginHooks, middlewares];
+    // The next line calls  middlewares, controller that has not been updated to TS yet
+    // eslint-disable-next-line
+    router[verb](name, middlewares, tryRoute(controller, (err, res) => {
+        helpers_1.default.formatApiResponse(400, res, err);
+    }));
+}
+exports.setupApiRoute = setupApiRoute;
